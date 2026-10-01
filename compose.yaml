@@ -1,0 +1,19 @@
+services:
+  local-md:
+    build:
+      context: .
+    container_name: local-md
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:4173:4173"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4173
+    volumes:
+      - ./documents:/app/documents
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true

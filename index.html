@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tamamen yerel çalışan Markdown görüntüleyici ve düzenleyici." />
+  <title>Local MD — Markdown Viewer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Local MD">
+        <span class="brand-mark">M↓</span>
+        <span><strong>Local MD</strong><small>Dosyaların cihazında kalır</small></span>
+      </div>
+      <div class="file-meta">
+        <span id="statusDot" class="status-dot"></span>
+        <input id="documentTitle" value="isimsiz.md" aria-label="Dosya adı" spellcheck="false" />
+        <span id="saveStatus">Hazır</span>
+      </div>
+      <div class="toolbar" aria-label="Ana araçlar">
+        <button id="openBtn" class="button primary" title="Markdown dosyası aç (⌘/Ctrl+O)">Dosya aç</button>
+        <button id="projectBtn" class="icon-button" title="Proje dosyaları">▤</button>
+        <button id="newBtn" class="icon-button" title="Yeni belge">＋</button>
+        <button id="saveBtn" class="icon-button" title="Projeye kaydet (⌘/Ctrl+S)">✓</button>
+        <button id="exportBtn" class="icon-button" title="Dışa aktar">↗</button>
+        <button id="themeBtn" class="icon-button" title="Temayı değiştir">◐</button>
+        <button id="helpBtn" class="icon-button" title="Kısayollar">?</button>
+      </div>
+      <input id="fileInput" type="file" accept=".md,.markdown,.mdown,.mkd,text/markdown,text/plain" multiple hidden />
+    </header>
+
+    <div class="tabbar" aria-label="Açık Markdown dosyaları">
+      <div id="tabs" class="tabs" role="tablist"></div>
+      <button id="addTabBtn" class="add-tab" title="Yeni sekme" aria-label="Yeni sekme">＋</button>
+    </div>
+
+    <main class="workspace">
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar-head">
+          <span>İçerik</span>
+          <button id="sidebarBtn" class="mini-button" title="Kenar çubuğunu kapat">‹</button>
+        </div>
+        <nav id="outline" class="outline" aria-label="Belge başlıkları"></nav>
+        <div class="sidebar-foot">
+          <div><span>Kelime</span><strong id="wordCount">0</strong></div>
+          <div><span>Karakter</span><strong id="charCount">0</strong></div>
+          <div><span>Okuma</span><strong id="readTime">0 dk</strong></div>
+        </div>
+      </aside>
+
+      <section class="content-area">
+        <div class="viewbar">
+          <button id="reopenSidebarBtn" class="mini-button hidden" title="İçindekileri aç">☰</button>
+          <div class="segmented" aria-label="Görünüm modu">
+            <button data-view="split" class="active">Bölünmüş</button>
+            <button data-view="edit">Düzenle</button>
+            <button data-view="preview">Oku</button>
+          </div>
+          <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Önizlemede ara…" /></label>
+          <button id="syncBtn" class="pill active" title="Senkron kaydırma">⇅ Senkron</button>
+          <button id="copyBtn" class="pill" title="HTML olarak kopyala">Kopyala</button>
+          <button id="fullscreenBtn" class="mini-button" title="Tam ekran">⛶</button>
+        </div>
+
+        <div id="panes" class="panes split">
+          <section class="pane editor-pane" aria-label="Markdown düzenleyici">
+            <div class="pane-label"><span>MARKDOWN</span><span id="lineCount">1 satır</span></div>
+            <textarea id="editor" aria-label="Markdown içeriği" spellcheck="true"></textarea>
+          </section>
+          <section class="pane preview-pane" aria-label="Markdown önizleme">
+            <div class="pane-label"><span>ÖNİZLEME</span><span id="renderStatus">Güncel</span></div>
+            <article id="preview" class="markdown-body"></article>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="dropOverlay" class="drop-overlay"><div><strong>.md dosyanı buraya bırak</strong><span>Dosya yalnızca tarayıcında okunur</span></div></div>
+
+  <dialog id="exportDialog">
+    <div class="dialog-head"><div><strong>Dışa aktar</strong><span>Belgeni istediğin formatta sakla</span></div><button data-close aria-label="Kapat">×</button></div>
+    <div class="export-grid">
+      <button data-export="md"><b>MD</b><span>Markdown</span><small>Kaynak dosya</small></button>
+      <button data-export="html"><b>&lt;/&gt;</b><span>HTML</span><small>Tek dosya, stilli</small></button>
+      <button data-export="pdf"><b>PDF</b><span>PDF / Yazdır</span><small>Tarayıcı çıktısı</small></button>
+    </div>
+  </dialog>
+
+  <dialog id="helpDialog">
+    <div class="dialog-head"><div><strong>Klavye kısayolları</strong><span>Daha hızlı çalış</span></div><button data-close aria-label="Kapat">×</button></div>
+    <div class="shortcuts">
+      <span>Dosya aç</span><kbd>⌘ / Ctrl + O</kbd><span>Projeye kaydet</span><kbd>⌘ / Ctrl + S</kbd>
+      <span>Yeni sekme</span><kbd>⌘ / Ctrl + N</kbd><span>Sekmeyi kapat</span><kbd>⌘ / Ctrl + W</kbd>
+      <span>Arama</span><kbd>⌘ / Ctrl + F</kbd><span>Görünüm değiştir</span><kbd>⌘ / Ctrl + ⇧ + P</kbd>
+      <span>Kalın</span><kbd>⌘ / Ctrl + B</kbd><span>İtalik</span><kbd>⌘ / Ctrl + I</kbd>
+    </div>
+  </dialog>
+
+  <dialog id="projectDialog">
+    <div class="dialog-head"><div><strong>Proje dosyaları</strong><span><code>documents/markdown_viewer/</code> klasöründeki Markdown dosyaları</span></div><button data-close aria-label="Kapat">×</button></div>
+    <div id="projectFiles" class="project-files"></div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="vendor/html2canvas.min.js"></script>
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

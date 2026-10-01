@@ -1,0 +1,7 @@
+.git
+.DS_Store
+tmp
+test-fixtures
+documents/*
+README.md
+Local MD.command
